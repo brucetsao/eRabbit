@@ -1,6 +1,31 @@
 int addrpin=7;
 int busypin=8;
 char addr;
+
+void setup()
+{
+pinMode(addrpin, OUTPUT);
+Serial.begin(9600);
+Serial.println("program Start here");
+}
+
+
+void loop()
+{
+  int aa ;
+  char song;
+   
+  if (Serial.available())
+  {
+     aa =  Serial.read() ;
+
+     song = (char)aa -0x30;
+          Serial.print("now playing song #");
+     Serial.println(song,HEX) ;
+  PlayVoice(song,addrpin);
+  }
+//;
+}
 void PlayVoice(unsigned char addr,unsigned int addrpin)
 {
 digitalWrite(addrpin,0);
@@ -39,29 +64,3 @@ pulseIn(busypin,1);
 }
 
 
-
-
-
-
-void setup()
-{
-  
-pinMode(addrpin, OUTPUT);
-}
-
-
-void loop()
-{
-  delay(2000);
-  addr=0;
-  
-  PlayVoice(addr,addrpin);
-  pulseIn(busypin,0);
-pulseIn(busypin,1);
-delay(5000);
-addr=1;
-PlayVoice(addr,addrpin);
-  pulseIn(busypin,0);
-pulseIn(busypin,1);
-
-}

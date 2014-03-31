@@ -2,8 +2,12 @@ const int motor1a = 30;
 const int motor1b = 32;
 const int motor2a = 34;
 const int motor2b = 36 ;
-String song1 = "BDDDDUUUUUUUUDDDUUUUDDDUUUUUUUUUDDDUUUUDDDUUUUUUUUUDDDUUUUDDDUUUUUUUUUDDDUUUUDDDUUUUDDDUUUUNDDDDDDUUUUUUDDDDDDUUUUUUDDDDDDUUUUUUBDDDUUUUDDUUUUDDUUUUDDDDDDDSN" ;
+String song[4] = {"BDDDDUUUUUUUUUDDDUUUUNDDDDDDUUUUUUDDDDDDBDDDUUUUDDUUUUDDUUUUDDDDDDDSN",
+                  "BDDDDUUUUUUUUUDDDUUUUNDDDDDDUUUUUUDDDDDDBDDDUUUUDDUUUUDDUUUUDDDDDDDSN",
+                 "BDDDDUUUUUUUUUDDDUUUUNDDDDDDUUUUUUDDDDDDBDDDUUUUDDUUUUDDUUUUDDDDDDDSN",
+                "BDDDDUUUUUUUUUDDDUUUUNDDDDDDUUUUUUDDDDDDBDDDUUUUDDUUUUDDUUUUDDDDDDDSN"} ;
 char ppo[255]; 
+int counter = 0 ;
 enum EarMotion {
   up,
   down
@@ -18,18 +22,36 @@ EarMotion ear  = up ;
    pinMode(motor2a,OUTPUT);
    pinMode(motor2b,OUTPUT);
    Serial.begin(9600);
+    Serial1.begin(9600);
     EarFlip('D' ,300);
     StopeEarFlip();
  }
 
  void loop()
  {
- MotionExecution(song1);
- 
-Serial.println("motion end here ...... ");
- delay(3000);
+   
+    // MotionExecution(song[0]);
+ shockrabbit();
+//Serial.println("motion end here ...... ");
+ delay(500);
  }
 
+void shockrabbit()
+{
+  char ii ;
+ if (Serial1.available())
+ {
+   ii = Serial1.read() ;
+   Serial.print("receive from bluetooth :");
+   Serial.print("(");
+   Serial.print(counter);
+   Serial.print("):(");
+   Serial.print(ii, DEC);
+   Serial.println(")");
+   counter ++ ;
+     
+ }
+}
 void MotionExecution(String po)
 {
   int ll = 0 ;
