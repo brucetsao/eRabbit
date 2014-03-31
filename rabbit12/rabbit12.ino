@@ -14,6 +14,8 @@ enum EarMotion {
 };
 
 EarMotion ear  = up ;
+int addrpin=6;
+char addr;
 
  void setup()
  {
@@ -21,8 +23,10 @@ EarMotion ear  = up ;
    pinMode(motor1b,OUTPUT);
    pinMode(motor2a,OUTPUT);
    pinMode(motor2b,OUTPUT);
+   pinMode(addrpin, OUTPUT);
    Serial.begin(9600);
     Serial1.begin(9600);
+    Serial.println("program Start here");
     EarFlip('D' ,300);
     StopeEarFlip();
  }
@@ -36,6 +40,12 @@ EarMotion ear  = up ;
  delay(500);
  }
 
+void playsound(char sn)
+{
+       Serial.print("now playing song #");
+       Serial.println(sn,HEX) ;
+       PlayVoice(sn,addrpin);
+}
 void shockrabbit()
 {
   char ii ;
@@ -53,6 +63,10 @@ void shockrabbit()
     {
        Serial.println("now send deancing");
      MotionExecution(song[ii-49]);
+    Serial.print("Sound Code is :(");
+    Serial.print(ii-49,HEX);
+    Serial.println(")");
+     playsound(ii-49);
     } 
     // MotionExecution(
  }
@@ -142,5 +156,43 @@ void StopeEarFlip()
     digitalWrite(motor1b,LOW); 
     Serial.println("rabbit's ears Stop Moving");
 
+}
+
+
+void PlayVoice(unsigned char addr,unsigned int addrpin)
+{
+digitalWrite(addrpin,0);
+delay(5);
+for(int i=0;i<8;i++)
+{
+digitalWrite(addrpin,1);
+if(addr & 1)
+{
+delayMicroseconds(600);
+digitalWrite(addrpin,0);
+delayMicroseconds(300);
+}
+else
+{
+delayMicroseconds(300);
+digitalWrite(addrpin,0);
+delayMicroseconds(600);
+}
+addr>>=1;  //此行用>>=还是=>>还不确定
+}
+digitalWrite(addrpin,1);
+}
+
+
+/*用于播放由一串地址组成的语句*/
+void PlayVoiceSerial(unsigned int addrserial[],unsigned int len,unsigned int addrpin,unsigned int busypin)
+{
+for(int i=0;i<len;i++)
+{
+addr=addrserial[i];
+PlayVoice(addr,addrpin);
+pulseIn(busypin,0);
+pulseIn(busypin,1);
+}
 }
 
